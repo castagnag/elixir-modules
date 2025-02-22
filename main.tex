@@ -1,0 +1,46 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{ebgaramond}
+\usepackage{lineno}
+\usepackage{amsmath}
+\author{Aghilas Y. Boussaa}
+\sloppy
+\begin{document}
+\section{Behaviours}
+\subsection{Syntax}
+\begin{figure}[h]
+\begin{verbatim}
+defbehaviour M do
+  [ $param X
+  | $opaque X X1 ... Xn
+  | $type X X1 ... Xn = t
+  | callback X : t
+  ]*
+end
+\end{verbatim}
+\caption{Surface syntax proposal for behaviours}
+\end{figure}
+\begin{figure}[h]
+  \[D::= \text{param} X | \text{type} X \overline{X} = T | \text{opaque} X
+  \overline{X} | \text{callback} X:T
+  \]
+  \caption{Formal syntax}
+\end{figure}
+\subsection{Translation}
+Suppose all the \texttt{\$param} are gathered at the beginning (if no, move them
+there).
+\section{Modules}
+\subsection{Syntax}
+\begin{figure}[h]
+\begin{verbatim}
+defmodule M do
+  [ $param X
+  | $param X=t
+  | @behaviour B
+  | def f(X1, ..., Xn) = e
+  ]*
+end
+\end{verbatim}
+\caption{Surface syntax proposal for behaviours}
+\end{figure}
+\end{document}
