@@ -1,7 +1,9 @@
-\documentclass[a4paper,12pt]{article}
+\documentclass[a4paper,11pt]{article}
+\usepackage[style=numeric]{biblatex}
+\addbibresource{main.bib}
 \usepackage[T1]{fontenc}
-\usepackage{ebgaramond}
-\usepackage{lineno}
+%\usepackage{ebgaramond}
+\usepackage{mathpartir}
 \usepackage{amsmath}
 \author{Aghilas Y. Boussaa}
 \sloppy
@@ -17,7 +19,7 @@ To specify a behaviour, programmers would use the syntax of
 figure~\ref{behaviour-surface}. It maps to the EBNF description given in
 figure~\ref{behaviour-formal1}, where $X$ denotes an identifier, $t$ a type and
 $\overline{X}$ a list of identifiers. This formal syntax is translated to the
-one given in figure~\ref{behaviour-formal2} by the rules given in
+one given in figure~\ref{behaviour-formal2} by the inductive rules given in
 figure~\ref{behaviour-formal1to2}. This second syntax separates \texttt{param}
 declarations from the others\footnote{The translation to the core language will
 show how \texttt{param} declarations differ from the others.} and puts them at
@@ -35,9 +37,10 @@ end
 \caption{Surface syntax proposal for behaviours}\label{behaviour-surface}
 \end{figure}
 \begin{figure}[h]
-  \begin{align*}D_B^S &::= \kw{param} X \pipe \kw{type} X \overline{X} = T \pipe \kw{opaque} X
-  \overline{X} \pipe \kw{callback} X:T \pipe D_B^S ; D_B^S \pipe \epsilon \\
-  B^S &::= \kw{defbehaviour} X \kw{do} D_B^S \kw{end}
+  \begin{align*}D_B^S &::= \kw{param} X \pipe \kw{type} X \overline{X} = T
+    \pipe \kw{opaque} X \overline{X} \pipe \kw{callback} X:T
+    \pipe D_B^S ; D_B^S \pipe \epsilon \\ B^S
+  &::= \kw{defbehaviour} X \kw{do} D_B^S \kw{end}
   \end{align*}
   \caption{A first formal syntax for behaviours}\label{behaviour-formal1}
 \end{figure}
@@ -49,10 +52,24 @@ end
   \caption{A second formal syntax for behaviours}\label{behaviour-formal2}
 \end{figure}
 \begin{figure}[h]
-  \caption{Translation rules between the two formal syntaxes}\label{behaviour-formal1to2}
+  \begin{mathpar}
+    \inferrule{D\hookrightarrow_B \kw{param} \overline{X};D_M\\
+    D'\hookrightarrow_B \kw{param} \overline{X'};D_M'}{
+      D;D'\hookrightarrow_B \kw{param} \overline{X}\overline{X'};(D_M;D_M')}\\
+    \inferrule{\\}{\kw{param} X \hookrightarrow_B \kw{param} X;\epsilon}\\
+    \inferrule{\\}{D \hookrightarrow_B \kw{param} \emptyset;D}\\
+  \end{mathpar}
+  \caption{Translation rules between the two formal
+    syntaxes}\label{behaviour-formal1to2}
 \end{figure}
 \section{Modules}
-Like with behaviours, we give a surface syntax for modules (figure~\ref{module-surface}), two formal syntaxes (figure~\ref{module-formal1} and figure~\ref{module-formal2}) and the translation rules between them (figure~\ref{module-1to2}).
+Like with behaviours, we give a surface syntax for modules
+(figure~\ref{module-surface}), two formal syntaxes (figure~\ref{module-formal1}
+and figure~\ref{module-formal2}) and the translation rules between them
+(figure~\ref{module-1to2}). The \texttt{param} keyword allows modules to depend
+on types (the first kind of declaration) and to specify the arguments of
+behaviours (the second one). The second formal syntax makes explicit which
+parameter is given to which behaviour.
 \begin{figure}[h]
 \begin{verbatim}
 defmodule M do
@@ -68,7 +85,8 @@ end
 \end{figure}
 \begin{figure}[h]
   \begin{align*}
-    D_M^S ::=& \kw{param} X \pipe \kw{param} X = t \pipe \kw{type} X \overline{X} = t \pipe \kw{behaviour} X \\
+    D_M^S ::=& \kw{param} X \pipe \kw{param} X = t
+    \pipe \kw{type} X \overline{X} = t \pipe \kw{behaviour} X \\
     |& \kw{def} X(\overline{X,}) = E \pipe D_M^S; D_M^S \pipe \epsilon \\
     M^S ::=& \kw{defmodule} X \kw{do} D_M^S \kw{end}
   \end{align*}
@@ -76,9 +94,11 @@ end
 \end{figure}
 \begin{figure}[h]
   \begin{align*}
-    D_M ::=&\,\text{\textbf{param}}_X\, X = t \pipe \kw{param} X \pipe \,\kw{type}X \overline{X}=t\pipe \kw{behaviour} X\\
-    |& \kw{def} X(\overline{X,}) = E \pipe D_M; D_M \pipe \epsilon \\
-    M ::=& D_M
+    D_M ::=&\,\text{\textbf{param}}_X\, X = t
+    \pipe \,\kw{type}X \overline{X}=t\pipe \kw{behaviour} X
+    \pipe \kw{def} X(\overline{X,}) = E\\
+    |&\, D_M; D_M \pipe \epsilon \\
+    M ::=& \kw{param} \overline{X}; D_M
   \end{align*}
   \caption{A second formal syntax for modules}\label{module-formal2}
 \end{figure}
@@ -86,8 +106,20 @@ end
   \caption{Translation rules between the two formal syntaxes}\label{module-1to2}
 \end{figure}
 \section{Core language}
-We use 1ML's core language augmented with intersection types.
+We translate the desugared syntaxes of the previous sections to 1ML's core
+language~\cite{rossberg20181ml} without \texttt{include} nor \texttt{where} and
+augmented with intersection types.
 \begin{figure}[h]
+  \begin{align*}
+    T ::=&\, E \pipe \kw{bool()} \pipe \{D\} \pipe (X:T)\Rightarrow T \pipe
+    (X:T)\rightarrow T \pipe \kw{type} \pipe =E \pipe T \cap T\\
+    D ::=&\,X:T \pipe D;D\pipe \epsilon \\
+    E ::=&\, X \pipe \kw{true} \pipe \kw{false} \pipe \kw{if} E
+    \kw{then} E \kw{else} E \pipe \{B\} \pipe E.X\\
+    |&\,\kw{fun} (X:T)\Rightarrow E \pipe X X \pipe \kw{type} T \pipe X :> T\\
+    B ::=&\, X=E \pipe B ; B \pipe \epsilon
+  \end{align*}
   \caption{Syntax of the core language}
 \end{figure}
+\printbibliography
 \end{document}
