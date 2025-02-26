@@ -194,7 +194,7 @@ figure~\ref{core-syntax}.
     D ::=&\,X:T \pipe D;D\pipe \epsilon \\
     E ::=&\, X \pipe \kw{true} \pipe \kw{false} \pipe \kw{if} E
     \kw{then} E \kw{else} E \pipe \{N\} \pipe E.X\\
-    |&\,\kw{fun} (X:T)\Rightarrow E \pipe \kw{fun} (X:T)\rightarrow E \pipe
+    |&\,\kw{fun} (X:T)\Rightarrow E \pipe
     X X \pipe \kw{type} T \pipe E :> T\\
     N ::=&\, X=E \pipe N ; N \pipe \epsilon
   \end{align*}
@@ -220,11 +220,13 @@ figure~\ref{core-trans}.
     \\
     \textbf{\emph{Modules}}\\
     \inferrule{\\}{\kw{def} X (\overline{Y:T}): T' = E\hookrightarrow_1^M
-      \left(X=\overline{\kw{fun} Y : T\rightarrow}{E}\right):
+      \left(X=\overline{\kw{fun} Y : T\Rightarrow}{E}\right):
       \left(X:\overline{(Y:T)\rightarrow}T'\right)}\\
-    \inferrule{\\}{\kw{type} X \overline{Y} = T\hookrightarrow_1^M
-      \left(X=\overline{\kw{fun} Y : \kw{type}\Rightarrow}\kw{type}T\right):
-    \left(X:\overline{(Y : \kw{type})\Rightarrow} [=\kw{type} T] \right)}\\
+    \inferrule{\\}{{\begin{aligned}
+        \kw{type} X \overline{Y} = T\hookrightarrow_1^M&
+      X=\overline{\kw{fun} Y : \kw{type}\Rightarrow}\kw{type}T:\\
+      &X:\overline{(Y : \kw{type})\Rightarrow} [=\kw{type} T]
+    \end{aligned}}\\}\\
     \inferrule{\\}{\epsilon\hookrightarrow_1^M \epsilon : \epsilon}\hfill
     \inferrule{D_M\hookrightarrow_1^M N:D\\ D_M'\hookrightarrow_1^M N':D'}
       {D_B;D_B'\hookrightarrow_1^M B;B'}

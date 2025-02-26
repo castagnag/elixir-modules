@@ -6,6 +6,6 @@ type t
 and d = string * t
 and e
   = Var of string | Cst of string | If of e * e * e | Struct of n list
-  | Dot of e * string | Fun of string * t * e * purity | App of e * e
+  | Dot of e * string | Fun of string * t * e | App of e * e
   | Rei of t | Seal of e * t
 and n = string * e
