@@ -15,8 +15,8 @@
 \; | \;
 }
 \begin{document}
-\section{Behaviours}
-To specify a behaviour, programmers would use the syntax of
+\section{Module types}
+To specify a module type, programmers would use the syntax of
 figure~\ref{behaviour-surface}. It maps to the EBNF description given in
 figure~\ref{behaviour-formal1}, where $X$ denotes an identifier, $t$ a type and
 $\overline{X}$ a list of identifiers (more generally for all symbol $A$,
@@ -25,10 +25,10 @@ the one given in figure~\ref{behaviour-formal2} by the inductive rules given in
 figure~\ref{behaviour-formal1to2}. This second syntax separates \texttt{param}
 declarations from the others\footnote{The translation to the core language will
 show how \texttt{param} declarations differ from the others.} and puts them at
-the beginning of the behaviour definition.
+the beginning of the module type definition.
 \begin{figure}[h]
 \begin{verbatim}
-defbehaviour M do
+defmoduletype B do
   [ $param X
   | $opaque X X1 ... Xn
   | $type X X1 ... Xn = t
@@ -36,22 +36,22 @@ defbehaviour M do
   ]*
 end
 \end{verbatim}
-\caption{Surface syntax proposal for behaviours}\label{behaviour-surface}
+\caption{Surface syntax proposal for module types}\label{behaviour-surface}
 \end{figure}
 \begin{figure}[h]
   \begin{align*}D_B^S ::=& \kw{param} X \pipe \kw{type} X \overline{X} = T
     \pipe \kw{opaque} X \overline{X} \pipe \kw{callback} X:T \\
     |&\, D_B^S ; D_B^S \pipe \epsilon \\
-    B^S ::=& \kw{defbehaviour} X \kw{do} D_B^S \kw{end}
+    B^S ::=& \kw{defmoduletype} X \kw{do} D_B^S \kw{end}
   \end{align*}
-  \caption{A first formal syntax for behaviours}\label{behaviour-formal1}
+  \caption{A first formal syntax for module types}\label{behaviour-formal1}
 \end{figure}
 \begin{figure}[h]
   \begin{align*}D_B &::= \kw{type} X \overline{X} = T \pipe \kw{opaque} X
   \overline{X} \pipe \kw{callback} X:T \pipe D_B ; D_B \pipe \epsilon \\
   B &::= \kw{param} \overline{X}; D_B
   \end{align*}
-  \caption{A second formal syntax for behaviours}\label{behaviour-formal2}
+  \caption{A second formal syntax for module types}\label{behaviour-formal2}
 \end{figure}
 \begin{figure}[h]
   \begin{mathpar}
@@ -63,27 +63,27 @@ end
       \kw{param} \emptyset;D}\\
   \end{mathpar}
   \caption{Translation rules between the two formal
-    syntaxes for behaviours}\label{behaviour-formal1to2}
+    syntaxes for module types}\label{behaviour-formal1to2}
 \end{figure}
 \section{Modules}
-Like with behaviours, we give a surface syntax for modules
+Like with module types, we give a surface syntax for modules
 (figure~\ref{module-surface}), two formal syntaxes (figure~\ref{module-formal1}
 and figure~\ref{module-formal2}) and the translation rules between them
 (figure~\ref{module-1to2}). The \texttt{param} keyword allows modules to depend
 on types (the first kind of declaration) and to specify the arguments of
-behaviours (the second one).
+module types (the second one).
 \begin{figure}[h]
 \begin{verbatim}
 defmodule M do
   [ $param X
   | $param X=t
-  | $type X=t
+  | $type X X1 ... Xn=t
   | @behaviour B
   | def f(X1 : t1, ..., Xn : tn) : t = e
   ]*
 end
 \end{verbatim}
-\caption{Surface syntax proposal for behaviours}\label{module-surface}
+\caption{Surface syntax proposal for modules}\label{module-surface}
 \end{figure}
 \begin{figure}[h]
   \begin{align*}
@@ -96,7 +96,7 @@ end
 \end{figure}
 
 In the second syntax the parameters are put at the beginning, followed by
-behaviour declarations and function and type declarations. Behaviours are
+module types declarations and function and type declarations. Module types are
 declared by a partial function from identifiers to records. For the translation
 rules we define the union of two such functions $b$ and $b'$ by the following
 equation:
@@ -111,8 +111,8 @@ and is undefined otherwise. When using this kind of union, we make sure that the
 tags $\overline{X_i}$ and $\overline{X'_i}$ are disjoint. The inductive rules of
 figure~\ref{module-1to2} define jugements of the form $\Gamma,\mathcal{B}\vdash
 D_M^S\hookrightarrow_M D_M$, meaning $D_M^S$ can be translated to $M$ knowing it
-should implement the behaviours in the set $\mathcal{B}$ and the possible
-behaviours, with their list of parameters, are given by $\Gamma$.
+should implement the module types in the set $\mathcal{B}$ and the possible
+module types, with their list of parameters, are given by $\Gamma$.
 
 \begin{figure}[h]
   \begin{align*}
@@ -129,6 +129,8 @@ behaviours, with their list of parameters, are given by $\Gamma$.
     \inferrule{X\in\text{dom}(\Gamma)}{\Gamma,\mathcal{B}\vdash
       \kw{behaviour} X\hookrightarrow_M
       \kw{param}\emptyset;\kw{behaviour} X \mapsto \{\}; \epsilon}\\
+    \inferrule{\exists!B\in\mathcal{B}.X\in\Gamma(B)}{\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
+      \kw{param} X;\kw{behaviour} B\mapsto\{X=X\}; \epsilon}
     \inferrule{\\}{\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
       \kw{param} X;\kw{behaviour} \emptyset; \epsilon}\\
     \inferrule{\Gamma,\mathcal{B} \vdash D \hookrightarrow_M
@@ -155,10 +157,10 @@ behaviours, with their list of parameters, are given by $\Gamma$.
     modules}\label{module-1to2}
 \end{figure}
 \section{Programs}
-We can, now, define a program as a sequence of behaviour and module
+We can, now, define a program as a sequence of module types and module
 declarations, as done in figure~\ref{program-formal}. The translation rules are
 given in figure~\ref{program-1to2}. They use the two preceding sets of rules
-while maintaining a context of behaviours.
+while maintaining a context of module types.
 \begin{figure}[h]
   \begin{align*}
     P^S::=&\, B^S; P^S \pipe M^S; P^S \pipe \epsilon\\
@@ -170,7 +172,7 @@ while maintaining a context of behaviours.
   \begin{mathpar}
     \inferrule{D^S_B\hookrightarrow_B \kw{param} \overline{X}; D\\
       \Gamma \cup (B\mapsto \overline{X})\vdash P^S\hookrightarrow_P P}{
-      \Gamma\vdash\kw{defbehaviour} B \kw{do} D^S_B \kw{end}; P^S
+      \Gamma\vdash\kw{defmoduletype} B \kw{do} D^S_B \kw{end}; P^S
       \hookrightarrow_P (B = \kw{param} \overline{X}; D); P
     }\\
     \inferrule{\Gamma, \emptyset\vdash D^S_M\hookrightarrow_M M\\
@@ -202,7 +204,7 @@ figure~\ref{core-syntax}.
 \end{figure}
 
 Programs of the preceding section are translated to sequence of bindings. The
-behaviours are translated to functions from types to types, and modules are
+module types are translated to functions from types to types, and modules are
 mapped to functions from types to records. The rules are given in
 figure~\ref{core-trans}.
 
