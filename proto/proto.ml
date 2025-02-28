@@ -1,6 +1,7 @@
 open Formal2
 open Core
 open Utils
+open Formal1to2
 
 let trans_out (x, p) =
   Format.printf "%s = %a;" x Pprint.print_expr (Formal2core.trans_program p)
