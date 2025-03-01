@@ -14,7 +14,7 @@ let ident = (['a' - 'z'] | ['A' - 'Z'] | '_')*
 rule lexer = parse
   | [' ' '\t' '\r' '\n'] { lexer lexbuf }
   | ("//" [^'\n']*) '\n' { lexer lexbuf }
-  | '$' ident as s { Utils.SMap.find s dolkw }
+  | '$' (ident as s) { Utils.SMap.find s dolkw }
   | ident as s
     { match Utils.SMap.find_opt s kw with
       | None -> IDENT s
@@ -27,6 +27,7 @@ rule lexer = parse
   | ',' { COMMA }
   | '.' {  DOT }
   | "->" { ARR }
+  | eof { EOF }
   | _ as c { Printf.eprintf "Unknown character : %c" c; exit 1 }
 
 {

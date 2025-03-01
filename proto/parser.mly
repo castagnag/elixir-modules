@@ -1,15 +1,15 @@
 %{
-  open Syntax
   open Core
   open Formal1
 %}
 
 %token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODULETYPE DEFMODULE DEF DO END
 %token <string> IDENT
-%token EQ DCOL LPAR RPAR COMMA DOT ARR
+%token EQ DCOL LPAR RPAR COMMA DOT ARR EOF
 %right ARR
 
 %start program
+%type <(string * Formal1.program) list> program
 
 %%
 
@@ -19,6 +19,7 @@ typ:
 ;
 
 expr:
+  | x = IDENT { Var x }
   | LPAR e = expr RPAR { e }
   | e = expr DOT x = IDENT { Dot (e, x) }
   | f = expr LPAR l = separated_list(COMMA, expr) RPAR
@@ -46,9 +47,15 @@ module_decl:
 ;
 
 modul: DEFMODULE m = IDENT DO l = module_decl* END { m, M l }
+;
 
-top_level: m = modul { m } | m = moduletype { m }
-  
-program: l = top_level* { l }
+top_level:
+  | m = modul { m }
+  | m = moduletype { m }
+;
+
+program:
+  l = top_level* EOF { l }
+;
 
 %%
