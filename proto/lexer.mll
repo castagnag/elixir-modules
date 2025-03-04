@@ -6,7 +6,7 @@
 
   let kw =
     ["do", DO; "end", END; "defmodule", DEFMODULE; "def", DEF;
-     "callback", CALLBACK; "defmoduletype", DEFMODULETYPE]
+     "callback", CALLBACK; "defmodtype", DEFMODTYPE]
     |> Utils.smap_of_list
 }
 

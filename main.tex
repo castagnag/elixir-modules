@@ -1,7 +1,7 @@
 \documentclass[a4paper,10pt]{article}
 \usepackage{xcolor}
-\usepackage[style=numeric]{biblatex}
-\addbibresource{main.bib}
+%\usepackage[style=numeric]{biblatex}
+%\addbibresource{main.bib}
 \usepackage[T1]{fontenc}
 %\usepackage{ebgaramond}
 \usepackage{mathpartir}
@@ -129,9 +129,11 @@ module types, with their list of parameters, are given by $\Gamma$.
     \inferrule{X\in\text{dom}(\Gamma)}{\Gamma,\mathcal{B}\vdash
       \kw{behaviour} X\hookrightarrow_M
       \kw{param}\emptyset;\kw{behaviour} X \mapsto \{\}; \epsilon}\\
-    \inferrule{\exists!B\in\mathcal{B}.X\in\Gamma(B)}{\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
-      \kw{param} X;\kw{behaviour} B\mapsto\{X=X\}; \epsilon}
-    \inferrule{\\}{\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
+    \inferrule{\exists!B\in\mathcal{B}.X\in\Gamma(B)}
+     {\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
+      \kw{param} X;\kw{behaviour} B\mapsto\{X=X\}; \epsilon}\\
+    \inferrule{\neg\exists B\in\mathcal{B}.X\in\Gamma(B)\\}
+     {\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
       \kw{param} X;\kw{behaviour} \emptyset; \epsilon}\\
     \inferrule{\Gamma,\mathcal{B} \vdash D \hookrightarrow_M
       \kw{param} P;\kw{behaviour} b;D_M\\
@@ -142,16 +144,13 @@ module types, with their list of parameters, are given by $\Gamma$.
       \text{tags}(b(X))\cap \text{tags}(b'(X))=\emptyset
     }{\mathcal{B}\vdash D;D'\hookrightarrow_M \kw{param} P P';
       \kw{behaviour} b \cup b'; (D_M;D'_M)}\\
-    \inferrule
-        {\exists! B\in\mathcal{B}. X\in \Gamma(B)}
-        {\Gamma,\mathcal{B}\vdash \kw{param} X=t\hookrightarrow_M
-          \kw{param} \emptyset; \kw{behaviour} B\mapsto \{X=t\};\epsilon
-        }\\
+    \inferrule{\exists! B\in\mathcal{B}. X\in \Gamma(B)}
+     {\Gamma,\mathcal{B}\vdash \kw{param} X=t\hookrightarrow_M
+          \kw{param} \emptyset; \kw{behaviour} B\mapsto \{X=t\};\epsilon}\\
     \inferrule{D\neq \kw{param} X\\ D\neq \kw{param} X = t\\
-      D\neq D^S_M;D^S_M}{
-      \Gamma,\mathcal{B}\vdash D\hookrightarrow_M \kw{param} \emptyset;
-      \kw{behaviour} \emptyset; D
-    }
+      D\neq D^S_M;D^S_M}
+     {\Gamma,\mathcal{B}\vdash D\hookrightarrow_M \kw{param} \emptyset;
+      \kw{behaviour} \emptyset; D}
   \end{mathpar}
   \caption{Translation rules between the two formal syntaxes for
     modules}\label{module-1to2}
@@ -186,7 +185,7 @@ while maintaining a context of module types.
 \end{figure}
 \section{Core language}
 We translate the desugared syntaxes of the previous sections to 1ML's core
-language~\cite{rossberg20181ml} without \texttt{include} nor \texttt{where} and
+language without \texttt{include} nor \texttt{where} and
 augmented with intersection types. The syntax of this language is given in
 figure~\ref{core-syntax}.
 \begin{figure}[h]
@@ -255,5 +254,5 @@ figure~\ref{core-trans}.
   \caption{Translation rules to the core language}\label{core-trans}
 \end{figure}
 
-\printbibliography
+%\printbibliography
 \end{document}

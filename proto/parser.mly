@@ -3,7 +3,7 @@
   open Formal1
 %}
 
-%token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODULETYPE DEFMODULE DEF DO END
+%token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODTYPE DEFMODULE DEF DO END
 %token <string> IDENT
 %token EQ DCOL LPAR RPAR COMMA DOT ARR EOF
 %right ARR
@@ -15,7 +15,7 @@
 
 typ:
   | e = expr { Expr e }
-  | t1 = typ ARR t2 = typ { FTy ("", t1, t2, I) }
+  | t1 = typ ARR t2 = typ { FTy ("_", t1, t2, I) }
 ;
 
 expr:
@@ -33,7 +33,7 @@ moduletype_decl:
   | CALLBACK x = IDENT DCOL t = typ { BCallback (x, t) }
 ;
 
-moduletype: DEFMODULETYPE b = IDENT DO l = moduletype_decl* END { b, B l } ;
+moduletype: DEFMODTYPE b = IDENT DO l = moduletype_decl* END { b, B l } ;
 
 arg: x = IDENT DCOL t = typ { x, t };
 

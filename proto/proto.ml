@@ -1,5 +1,5 @@
 let trans_out (x, p) =
-  Format.printf "%s = %a;" x Pprint.print_expr (Formal2core.trans_program p)
+  Format.printf "%s =@ @[<b 2>%a;@]@." x Pprint.print_expr (Formal2core.trans_program p)
 
 let read_file f =
   let ic = open_in f in

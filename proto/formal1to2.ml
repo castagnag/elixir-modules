@@ -22,7 +22,11 @@ let trans_module env l =
     | F1.MParamE (x, t) :: tl ->
        let behaviour = Utils.SMap.find x b in
        let mparam, beh, mbody = trans_module b tl in
-       let bmap = Utils.SMap.find behaviour beh in
+       let bmap =
+         match Utils.SMap.find_opt behaviour beh with
+         | None -> Utils.SMap.empty
+         | Some m -> m
+       in
        assert (not Utils.SMap.(mem x bmap));
        let bmap = Utils.SMap.add x t bmap in
        mparam, Utils.SMap.add behaviour bmap beh, mbody
