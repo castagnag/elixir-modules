@@ -23,10 +23,14 @@ rule lexer = parse
   | '=' { EQ }
   | '(' { LPAR }
   | ')' { RPAR }
+  | '{' { LCUR }
+  | '}' { RCUR }
   | ':' (ident as s) { ATOM s }
   | ':' { DCOL }
+  | ';' { SCOL }
   | ',' { COMMA }
   | '.' {  DOT }
+  | '%' { PERC }
   | "->" { ARR }
   | eof { EOF }
   | _ as c { Printf.eprintf "Unknown character : %c" c; exit 1 }
