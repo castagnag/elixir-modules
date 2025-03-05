@@ -31,6 +31,8 @@ and print_expr fmt = function
   | Seal (e, t) ->
      fprintf fmt "@[(%a)@]@ :>@ @[(%a)@]" print_expr e print_type t
   | EAtom a -> fprintf fmt "atom_expr_%s" a
+  | Tuple l ->
+     pp_print_list ~pp_sep:(fun fmt () -> fprintf fmt ",@ ") print_expr fmt l
 and print_bind fmt = function
   | [] -> fprintf fmt ""
   | (x, e) :: tl -> fprintf fmt "%s = %a;@ %a" x print_expr e print_bind tl

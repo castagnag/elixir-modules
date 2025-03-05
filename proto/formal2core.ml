@@ -31,6 +31,7 @@ and subst_expr m = function
   | Seal (e, t) ->
      Seal (subst_expr m e, subst_type m t)
   | EAtom a -> EAtom a
+  | Tuple l -> Tuple (List.map (subst_expr m) l)
   | Var x ->
      match Utils.SMap.find_opt x m with
      | None -> Var x

@@ -7,8 +7,8 @@
 
   let add_atom x =
     if not Utils.SSet.(mem x !atoms) then begin
-      Format.printf "type atom_type_%s = primitive \"atom_type_%s\";
-atom_expr_%s = primitive \"atom_expr_%s\" ();" x x x x;
+      Format.printf "type atom_type_%s = {%s:{}};
+atom_expr_%s = {%s={}};\n" x x x x;
       atoms := Utils.SSet.add x !atoms
     end
 %}
@@ -16,7 +16,7 @@ atom_expr_%s = primitive \"atom_expr_%s\" ();" x x x x;
 %token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODTYPE DEFMODULE DEF DO END
 %token <string> IDENT
 %token <string> ATOM
-%token EQ DCOL LPAR RPAR LCUR RCUR SCOL COMMA DOT ARR PREC EOF
+%token EQ DCOL LPAR RPAR LCUR RCUR SCOL COMMA DOT ARR PERC EOF
 %right ARR
 
 %start program
@@ -34,27 +34,25 @@ tower_of_ident:
 typ:
   | e = tower_of_ident { Expr e }
   | x = IDENT LPAR l = separated_list(COMMA, expr) RPAR 
-    { List.fold_left (fun f x -> App (f, x)) (Var x) l }
+    { Expr (List.fold_left (fun f x -> App (f, x)) (Var x) l) }
   | LPAR t = typ RPAR { t }
   | t1 = typ ARR t2 = typ { FTy ("_", t1, t2, I) }
   | a = ATOM { add_atom a; TAtom a }
   | PERC LCUR l = separated_list(SCOL, type_decl) RCUR { Sig l }
-;
-
-expr:
-  | e = expr_non_atom { e }
-  | a = ATOM { add_atom a; EAtom a }
+  | LCUR l = separated_list(COMMA, expr) RCUR { Expr (Tuple l) }
 ;
 
 expr_assign: x = IDENT EQ e = expr { x, e } ;
 
-expr_non_atom:
+expr:
+  | a = ATOM { add_atom a; EAtom a }
   | x = IDENT { Var x }
   | LPAR e = expr RPAR { e }
   | e = expr DOT x = IDENT { Dot (e, x) }
   | f = expr LPAR l = separated_list(COMMA, expr) RPAR
     { List.fold_left (fun f x -> App (f, x)) f l }
   | PERC LCUR l = separated_list(SCOL, expr_assign) RCUR { Struct l }
+  | LCUR l = separated_list(COMMA, expr) RCUR { Tuple l }
 ;
 
 moduletype_decl:
