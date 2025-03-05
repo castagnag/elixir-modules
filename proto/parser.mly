@@ -1,10 +1,21 @@
 %{
   open Core
   open Formal1
+
+  let atoms = ref Utils.SSet.empty
+  
+
+  let add_atom x =
+    if not Utils.SSet.(mem x !atoms) then begin
+      Format.printf "type atom_type_%s = primitive \"atom_type_%s\";
+atom_expr_%s = primitive \"atom_expr_%s\" ();" x x x x;
+      atoms := Utils.SSet.add x !atoms
+    end
 %}
 
 %token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODTYPE DEFMODULE DEF DO END
 %token <string> IDENT
+%token <string> ATOM
 %token EQ DCOL LPAR RPAR COMMA DOT ARR EOF
 %right ARR
 
@@ -14,11 +25,16 @@
 %%
 
 typ:
-  | e = expr { Expr e }
+  | e = expr_non_atom { Expr e }
   | t1 = typ ARR t2 = typ { FTy ("_", t1, t2, I) }
+  | a = ATOM { add_atom a; TAtom a }
 ;
 
 expr:
+  | e = expr_non_atom { e }
+  | a = ATOM { add_atom a; EAtom a }
+
+expr_non_atom:
   | x = IDENT { Var x }
   | LPAR e = expr RPAR { e }
   | e = expr DOT x = IDENT { Dot (e, x) }

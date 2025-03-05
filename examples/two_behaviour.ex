@@ -26,4 +26,3 @@ defmodule StackServer do
   def handle_call(x : item, s : state) : state =
     push(x, s)
 end
-  

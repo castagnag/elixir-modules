@@ -13,6 +13,7 @@ let rec subst_type m = function
   | Type -> Type
   | Equ e -> Equ (subst_expr m e)
   | Inter (t, t') -> Inter (subst_type m t, subst_type m t')
+  | TAtom a -> TAtom a
 and subst_decl m = function
   | [] -> []
   | (x, t) :: tl ->
@@ -29,6 +30,7 @@ and subst_expr m = function
   | Rei t -> Rei (subst_type m t)
   | Seal (e, t) ->
      Seal (subst_expr m e, subst_type m t)
+  | EAtom a -> EAtom a
   | Var x ->
      match Utils.SMap.find_opt x m with
      | None -> Var x

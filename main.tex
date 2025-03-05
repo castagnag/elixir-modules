@@ -191,12 +191,13 @@ figure~\ref{core-syntax}.
 \begin{figure}[h]
   \begin{align*}
     T ::=&\, E \pipe \kw{bool()} \pipe \{D\} \pipe (X:T)\Rightarrow T \pipe
-    (X:T)\rightarrow T \pipe \kw{type} \pipe =E \pipe T \cap T\\
+    (X:T)\rightarrow T \\\
+    |&\kw{type} \pipe =E \pipe T \cap T \pipe :X\\
     D ::=&\,X:T \pipe D;D\pipe \epsilon \\
     E ::=&\, X \pipe \kw{true} \pipe \kw{false} \pipe \kw{if} E
     \kw{then} E \kw{else} E \pipe \{N\} \pipe E.X\\
     |&\,\kw{fun} (X:T)\Rightarrow E \pipe
-    X X \pipe \kw{type} T \pipe E :> T\\
+    X X \pipe \kw{type} T \pipe E :> T \pipe :X\\
     N ::=&\, X=E \pipe N ; N \pipe \epsilon
   \end{align*}
   \caption{Syntax of the core language}\label{core-syntax}
