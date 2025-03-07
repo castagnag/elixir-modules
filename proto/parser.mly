@@ -26,13 +26,8 @@ atom_expr_%s = {%s={}};\n" x x x x;
 
 type_decl: x = IDENT DCOL t = typ { x, t }
 
-tower_of_ident:
-  | x = IDENT { Var x }
-  | e = tower_of_ident DOT x = IDENT { Dot (e, x) }
-;
-
 typ:
-  | e = tower_of_ident { Expr e }
+  | v = IDENT { Expr (Var v) }
   | x = IDENT LPAR l = separated_list(COMMA, expr) RPAR 
     { Expr (List.fold_left (fun f x -> App (f, x)) (Var x) l) }
   | LPAR t = typ RPAR { t }
