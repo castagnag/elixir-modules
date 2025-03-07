@@ -67,6 +67,7 @@ module_decl:
   | PARAM x = IDENT { MParam x }
   | PARAM x = IDENT EQ t = typ { MParamE (x, t) }
   | TYPE x = IDENT l = IDENT* EQ t = typ { MType (x, l, t) }
+  | OPAQUE x = IDENT l = IDENT* EQ t = typ { MOpaque (x, l, t) }
   | BEHAVIOUR x = IDENT { MBehaviour x }
   | DEF f = IDENT LPAR x = separated_list(COMMA, arg) RPAR DCOL t = typ EQ
       e = expr { MDef (false, f, x, t, e) }

@@ -59,6 +59,10 @@ let trans_module = function
   | F2.MType (x, y, t) ->
      (x, List.fold_right (fun y e -> Fun (y, Type, e)) y (Rei t)),
      [x, List.fold_right (fun y t -> FTy (y, Type, t, P)) y (Equ (Rei t))]
+  | F2.MOpaque (x, y, t) ->
+     (x, List.fold_right (fun y e -> Fun (y, Type, e)) y (Rei t)),
+     [x, List.fold_right (fun y t -> FTy (y, Type, t, P)) y Type]
+     
 
 let trans_program = function
   | F2.B b ->

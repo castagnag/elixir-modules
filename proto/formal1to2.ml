@@ -41,6 +41,9 @@ let trans_module env l =
     | F1.MType (x, l, t) :: tl ->
        let mparam, beh, mbody = trans_module b tl in
        mparam, beh, F2.MType (x, l, t) :: mbody
+    | F1.MOpaque (x, l, t) :: tl ->
+       let mparam, beh, mbody = trans_module b tl in
+       mparam, beh, F2.MOpaque (x, l, t) :: mbody
     | F1.MBehaviour behaviour :: tl ->
        let b =
          List.fold_left (fun b label ->
