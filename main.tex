@@ -252,6 +252,8 @@ figure~\ref{core-trans}.
       M= &\kw{fun} (p: \{\overline{X:\kw{type}}\})
          \Rightarrow\{\overline{X=p.X};N\}:>\\
          & (p: \{\overline{X:\kw{type}}\})\Rightarrow
+         \{\overline{X:[=p.X]};D\} :>\\
+         & (p: \{\overline{X:\kw{type}}\})\Rightarrow
          \{\overline{X:[=p.X]};D\}\cap
          \bigcap\overline{B(\{\overline{X_B=\kw{type}T'_B}\})}
 % latex hack, to fix I guess
@@ -259,6 +261,9 @@ figure~\ref{core-trans}.
   \end{mathpar}
   \caption{Translation rules to the core language}\label{core-trans}
 \end{figure}
+
+We have two sealings in the last rule to take into account the result type given
+by the prorgammer and compare them to the one given by the module types.
 
 %\printbibliography
 \end{document}

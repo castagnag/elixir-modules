@@ -95,4 +95,4 @@ let trans_program = function
                rest
              else FTy (param, param_type, rest, P)
      in
-     Seal (e, t)
+     Seal (Seal(e, Sig (List.map (fun x -> x, Equ (Dot (Var param, x))) m.mparam @ d)), t)
