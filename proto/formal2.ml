@@ -4,7 +4,7 @@ type bdecl =
 
 type mdecl =
   | MType of string * string list * Core.t
-  | MDef of string * (string * Core.t) list * Core.t * Core.e
+  | MDef of bool * string * (string * Core.t) list * Core.t * Core.e
 
 
 type behaviour = { bparam : string list ; bbody : bdecl list }

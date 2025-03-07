@@ -48,9 +48,9 @@ let trans_module env l =
            b (Utils.SMap.find behaviour env)
        in
        trans_module b tl
-    | F1.MDef (x, l, t, e) :: tl ->
+    | F1.MDef (p, x, l, t, e) :: tl ->
        let mparam, beh, mbody = trans_module b tl in
-       mparam, beh, F2.MDef (x, l, t,e ) :: mbody
+       mparam, beh, F2.MDef (p, x, l, t, e) :: mbody
   in
   let mparam, beh, mbody = trans_module Utils.SMap.empty l in 
   F2.{ mparam; mbody; mbehaviour = Utils.(SMap.map list_of_smap beh) }

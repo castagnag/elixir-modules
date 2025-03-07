@@ -80,6 +80,7 @@ defmodule M do
   | $type X X1 ... Xn=t
   | @behaviour B
   | def f(X1 : t1, ..., Xn : tn) : t = e
+  | defp f(X1 : t1, ..., Xn : tn) : t = e
   ]*
 end
 \end{verbatim}
@@ -89,7 +90,8 @@ end
   \begin{align*}
     D_M^S ::=& \kw{param} X \pipe \kw{param} X = T
     \pipe \kw{type} X \overline{X} = T \pipe\kw{behaviour} X \\
-    |& \kw{def} X(\overline{X : T}) : T = E \pipe D_M^S; D_M^S \pipe \epsilon \\
+    |& \kw{def(p)} X(\overline{X : T}) : T = E \pipe D_M^S; D_M^S \pipe
+    \epsilon \\
     M^S ::=& \kw{defmodule} X \kw{do} D_M^S \kw{end}
   \end{align*}
   \caption{A first formal syntax for modules}\label{module-formal1}
@@ -117,7 +119,7 @@ module types, with their list of parameters, are given by $\Gamma$.
 \begin{figure}[h]
   \begin{align*}
     D_M ::=& \,\kw{type}X \overline{X}=T
-    \pipe \kw{def} X(\overline{X : T}) : T = E
+    \pipe \kw{def(p)} X(\overline{X : T}) : T = E
     \pipe D_M; D_M \pipe \epsilon \\
     M ::=& \kw{param} \overline{X};
     \kw{behaviour} X\mapsto\{\overline{X=T}\}; D_M
@@ -224,6 +226,9 @@ figure~\ref{core-trans}.
     \inferrule{\\}{\kw{def} X (\overline{Y:T}): T' = E\hookrightarrow_1^M
       \left(X=\overline{\kw{fun} Y : T\Rightarrow}{E}\right):
       \left(X:\overline{(Y:T)\rightarrow}T'\right)}\\
+    \inferrule{\\}{\kw{defp} X (\overline{Y:T}): T' = E\hookrightarrow_1^M
+      \left(X=\overline{\kw{fun} Y : T\Rightarrow}{E}\right):\epsilon}\\
+
     \inferrule{\\}{{\begin{aligned}
         \kw{type} X \overline{Y} = T\hookrightarrow_1^M&
       X=\overline{\kw{fun} Y : \kw{type}\Rightarrow}\kw{type}T:\\

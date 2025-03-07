@@ -50,12 +50,15 @@ let trans_behaviour = function
      x, t
 
 let trans_module = function
-  | F2.MDef (x, yt, t', e) ->
+  | F2.MDef (false, x, yt, t', e) ->
      (x, List.fold_right (fun (y, t) e -> Fun (y, t, e)) yt e),
-     (x, List.fold_right (fun (y, t) t' -> FTy (y, t, t', I)) yt t')
+     [x, List.fold_right (fun (y, t) t' -> FTy (y, t, t', I)) yt t']
+  | F2.MDef (true, x, yt, _, e) ->
+     (x, List.fold_right (fun (y, t) e -> Fun (y, t, e)) yt e),
+     []
   | F2.MType (x, y, t) ->
      (x, List.fold_right (fun y e -> Fun (y, Type, e)) y (Rei t)),
-     (x, List.fold_right (fun y t -> FTy (y, Type, t, P)) y (Equ (Rei t)))
+     [x, List.fold_right (fun y t -> FTy (y, Type, t, P)) y (Equ (Rei t))]
 
 let trans_program = function
   | F2.B b ->
@@ -66,6 +69,7 @@ let trans_program = function
      Fun (param, sign, Rei (Sig (res @ d)) )
   | F2.M m ->
      let n, d = List.split (List.map trans_module m.mbody) in
+     let d = List.fold_right (@) d [] in
      let param = fresh_name () in
      let ms = Utils.smap_of_list
                (List.map (fun x -> (x, Dot (Var param, x))) m.mparam) in

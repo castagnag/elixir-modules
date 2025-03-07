@@ -5,7 +5,7 @@ type behaviour =
 type modul =
   | MParam of string | MParamE of string * Core.t
   | MType of string * string list * Core.t | MBehaviour of string
-  | MDef of string * (string * Core.t) list * Core.t * Core.e
+  | MDef of bool * string * (string * Core.t) list * Core.t * Core.e
 
 type program =
   | M of modul list

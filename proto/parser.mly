@@ -13,7 +13,7 @@ atom_expr_%s = {%s={}};\n" x x x x;
     end
 %}
 
-%token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODTYPE DEFMODULE DEF DO END
+%token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODTYPE DEFMODULE DEF DO END DEFP
 %token <string> IDENT
 %token <string> ATOM
 %token EQ DCOL LPAR RPAR LCUR RCUR SCOL COMMA DOT ARR PERC EOF
@@ -72,7 +72,9 @@ module_decl:
   | TYPE x = IDENT l = IDENT* EQ t = typ { MType (x, l, t) }
   | BEHAVIOUR x = IDENT { MBehaviour x }
   | DEF f = IDENT LPAR x = separated_list(COMMA, arg) RPAR DCOL t = typ EQ
-      e = expr { MDef (f, x, t, e) }
+      e = expr { MDef (false, f, x, t, e) }
+  | DEFP f = IDENT LPAR x = separated_list(COMMA, arg) RPAR DCOL t = typ EQ
+      e = expr { MDef (true, f, x, t, e) }
 ;
 
 modul: DEFMODULE m = IDENT DO l = module_decl* END { m, M l }
