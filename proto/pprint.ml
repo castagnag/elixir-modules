@@ -9,7 +9,8 @@ let rec print_type fmt = function
      fprintf fmt "@[(%s:%a)@]@ %s@ %a" x print_type t arr print_type t'
   | Type -> fprintf fmt "type"
   | Equ e -> fprintf fmt "@[(= %a)@]" print_expr e
-  | Inter (t, t') -> fprintf fmt "@[%a@]@ /\\@,@[%a@]" print_type t print_type t'
+  (* | Inter (t, t') -> fprintf fmt "@[%a@]@ /\\@,@[%a@]" print_type t print_type t' *)
+  | Inter (t, _)  -> print_type fmt t
   | TAtom a -> fprintf fmt "atom_type_%s" a
 and print_decl fmt = function
   | [] -> fprintf fmt ""
