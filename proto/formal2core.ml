@@ -76,16 +76,23 @@ let trans_program = function
      let xbtb = Utils.(list_of_smap
                          (SMap.map (subst_decl ms) m.mbehaviour)) in
      let param_type = Sig (List.map (fun x -> x, Type) m.mparam) in
-     let e =
-       Fun (param, param_type,
-            Struct (List.map (fun x -> (x, Dot (Var param, x))) m.mparam @ n))
+     let res =
+       Struct (List.map (fun x -> (x, Dot (Var param, x))) m.mparam @ n)
+     in
+     let e = if param_type = Sig [] then res else
+               Fun (param, param_type, res)
      in
 
-     let t =
+     let rest =
        List.fold_right
          (fun (b, xbtb) t ->
            let xbtb = List.map (fun (x, t) -> x, Rei t) xbtb in
            Inter (Expr (App (Var b, Struct xbtb)), t))
          xbtb @@
          Sig (List.map (fun x -> x, Equ (Dot (Var param, x))) m.mparam @ d)
-     in Seal (e, FTy (param, param_type, t, P))
+     in
+     let t = if param_type = Sig [] then
+               rest
+             else FTy (param, param_type, rest, P)
+     in
+     Seal (e, t)
