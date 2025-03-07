@@ -29,7 +29,8 @@ let trans_module env l =
        in
        assert (not Utils.SMap.(mem x bmap));
        let bmap = Utils.SMap.add x t bmap in
-       mparam, Utils.SMap.add behaviour bmap beh, mbody
+       mparam, Utils.SMap.add behaviour bmap beh,
+       (F2.MType (x, [], t)) :: mbody
     | F1.MParam x :: tl ->
        let tl = match Utils.SMap.find_opt x b with
          | None -> tl

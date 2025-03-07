@@ -134,7 +134,7 @@ module types, with their list of parameters, are given by $\Gamma$.
     \inferrule{\exists!B\in\mathcal{B}.X\in\Gamma(B)}
      {\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
       \kw{param} X;\kw{behaviour} B\mapsto\{X=X\}; \epsilon}\\
-    \inferrule{\neg\exists B\in\mathcal{B}.X\in\Gamma(B)\\}
+    \inferrule{\neg\exists B\in\mathcal{B}.X\in\Gamma(B)}
      {\Gamma,\mathcal{B}\vdash\kw{param} X\hookrightarrow_M
       \kw{param} X;\kw{behaviour} \emptyset; \epsilon}\\
     \inferrule{\Gamma,\mathcal{B} \vdash D \hookrightarrow_M
@@ -148,7 +148,7 @@ module types, with their list of parameters, are given by $\Gamma$.
       \kw{behaviour} b \cup b'; (D_M;D'_M)}\\
     \inferrule{\exists! B\in\mathcal{B}. X\in \Gamma(B)}
      {\Gamma,\mathcal{B}\vdash \kw{param} X=t\hookrightarrow_M
-          \kw{param} \emptyset; \kw{behaviour} B\mapsto \{X=t\};\epsilon}\\
+          \kw{param} \emptyset; \kw{behaviour} B\mapsto \{X=t\};\kw{type} X = t}\\
     \inferrule{D\neq \kw{param} X\\ D\neq \kw{param} X = t\\
       D\neq D^S_M;D^S_M}
      {\Gamma,\mathcal{B}\vdash D\hookrightarrow_M \kw{param} \emptyset;
@@ -198,7 +198,7 @@ figure~\ref{core-syntax}.
     D ::=&\,X:T \pipe D;D\pipe \epsilon \\
     E ::=&\, X \pipe \kw{true} \pipe \kw{false} \pipe \kw{if} E
     \kw{then} E \kw{else} E \pipe \{N\} \pipe E.X\\
-    |&\,\kw{fun} (X:T)\Rightarrow E \pipe
+    |&\kw{fun} (X:T)\Rightarrow E \pipe
     X X \pipe \kw{type} T \pipe E :> T \pipe :X\\
     N ::=&\, X=E \pipe N ; N \pipe \epsilon
   \end{align*}
