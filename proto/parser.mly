@@ -16,7 +16,7 @@ atom_expr_%s = {%s={}};\n" x x x x;
 %token PARAM TYPE OPAQUE BEHAVIOUR CALLBACK DEFMODTYPE DEFMODULE DEF DO END DEFP
 %token <string> IDENT
 %token <string> ATOM
-%token EQ DCOL LPAR RPAR LCUR RCUR SCOL COMMA DOT ARR PERC EOF
+%token EQ DCOL LPAR RPAR LCUR RCUR LSQU RSQU SCOL COMMA DOT ARR PERC EOF
 %right ARR
 
 %start program
@@ -53,6 +53,8 @@ expr:
     { List.fold_left (fun f x -> App (f, x)) f l }
   | PERC LCUR l = separated_list(SCOL, expr_assign) RCUR { Struct l }
   | LCUR l = separated_list(COMMA, expr) RCUR { Tuple l }
+  | LSQU l = separated_list(COMMA, expr) RSQU
+    { List.fold_right (fun x xs -> App (App (Var "List.cons", x), xs)) l (Var "List.nil") }
 ;
 
 moduletype_decl:

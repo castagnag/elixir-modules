@@ -10,7 +10,7 @@
     |> Utils.smap_of_list
 }
 
-let ident = (['a' - 'z'] | ['A' - 'Z'] | '_')+
+let ident = (['a' - 'z'] | ['A' - 'Z'] | '_' | ['0'-'9'])+
 rule lexer = parse
   | [' ' '\t' '\r' '\n'] { lexer lexbuf }
   | ("//" [^'\n']*) '\n' { lexer lexbuf }
@@ -25,6 +25,8 @@ rule lexer = parse
   | ')' { RPAR }
   | '{' { LCUR }
   | '}' { RCUR }
+  | '[' { LSQU }
+  | ']' { RSQU }
   | ':' (ident as s) { ATOM s }
   | ':' { DCOL }
   | ';' { SCOL }

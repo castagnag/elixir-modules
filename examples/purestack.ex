@@ -8,5 +8,4 @@ end
 defmodtype PureStackType do
    $param elt
    callback new : list(elt) -> list(elt)
-   
 end
